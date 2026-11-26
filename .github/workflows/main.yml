@@ -1,0 +1,15 @@
+name: Commander Gaming APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check project files
+        run: |
+          ls -la
+          test -f main.py
+          test -f buildozer.spec
