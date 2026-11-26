@@ -38,10 +38,13 @@ jobs:
         yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
         /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-33" "build-tools;37.0.0" || true
 
+    
     - name: Build APK
       run: |
-        buildozer -v android debug
-
+        sed -i 's/^#.*android.accept_sdk_license.*/android.accept_sdk_license = True/' buildozer.spec
+        grep -q "android.accept_sdk_license = True" buildozer.spec || echo "android.accept_sdk_license = True" >> buildozer.spec
+        cat buildozer.spec | grep accept_sdk_license
+        yes | buildozer -v android debug
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
