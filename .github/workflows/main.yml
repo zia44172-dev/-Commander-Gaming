@@ -1,3 +1,4 @@
+
 name: Commander Gaming APK
 
 on:
@@ -6,10 +7,38 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+    timeout-minutes: 60
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Check project files
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Install dependencies
         run: |
-          ls -la
-          test -f main.py
-          test -f buildozer.spec
+          sudo apt-get update
+          sudo apt-get install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev automake
+          python -m pip install --upgrade pip
+          python -m pip install buildozer "Cython==0.29.36" virtualenv
+
+      - name: Build APK
+        run: |
+          yes | buildozer -v android debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Commander-Gaming-APK
+          path: bin/*.apk
+          if-no-files-found: error
+          
