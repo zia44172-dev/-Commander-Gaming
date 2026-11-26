@@ -32,7 +32,11 @@ jobs:
           python -m pip install buildozer "Cython==0.29.36" virtualenv
 
       - name: Build APK
+            - name: Install Android SDK components
         run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+        run: |"platform-tools" "platforms;android-33" "build-tools;33.0.2"
           buildozer -v android debug
 
       - name: Upload APK
