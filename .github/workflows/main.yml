@@ -52,3 +52,4 @@ jobs:
           name: Commander-Gaming-APK
           path: bin/*.apk
           if-no-files-found: error
+          
