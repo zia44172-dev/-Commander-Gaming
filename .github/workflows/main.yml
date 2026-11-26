@@ -1,4 +1,3 @@
-
 name: Commander Gaming APK
 
 on:
@@ -8,6 +7,9 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     timeout-minutes: 60
+
+    env:
+      ANDROIDSDK: /usr/local/lib/android/sdk
 
     steps:
       - name: Checkout
@@ -31,12 +33,13 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install buildozer "Cython==0.29.36" virtualenv
 
-      - name: Build APK
-            - name: Install Android SDK components
+      - name: Install Android SDK components
         run: |
-          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-33" "build-tools;33.0.2"
-        run: |"platform-tools" "platforms;android-33" "build-tools;33.0.2"
+          yes | "$ANDROIDSDK/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$ANDROIDSDK" --licenses
+          "$ANDROIDSDK/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$ANDROIDSDK" "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+
+      - name: Build APK
+        run: |
           buildozer -v android debug
 
       - name: Upload APK
